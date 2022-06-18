@@ -9,12 +9,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.demo.security.authentication.JWTAuthentication;
+import com.demo.util.JWTUtil;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -31,6 +34,7 @@ public class JWTFilter extends OncePerRequestFilter{
 			}
 			header = header.substring(7,header.length());
 			Claims claims = Jwts.parser()
+								.setSigningKey(Base64.encode(new JWTUtil().getKey().getBytes()))
 								.parseClaimsJws(header)
 								.getBody();
 			String subject = claims.getSubject();

@@ -116,7 +116,7 @@ public class UserService {
 	}
 	
 	public ResponseEntity<AppResponse> deleteUser(Long id){
-		userRepository.deleteById(id);
+		userRepository.deleteById(id);;
 		response.setData(null);
 		response.setMessage("sukses menghapus data user");
 		return ResponseEntity.status(HttpStatus.OK).body(response);
