@@ -3,8 +3,10 @@ package com.demo.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import com.demo.entities.User;
 
@@ -32,5 +34,10 @@ public class JWTUtil {
 	
 	public String getKey() {
 		return this.JWT_SECRET;
+	}
+	
+	@Bean
+	public RestTemplate getRestTemplate() {
+		return new RestTemplate();
 	}
 }

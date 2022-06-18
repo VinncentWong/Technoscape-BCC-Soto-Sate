@@ -22,12 +22,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers("/user/login", "/user/signup");
+		web.ignoring().mvcMatchers("/user/login", "/user/signup").mvcMatchers("/api/**");
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().permitAll();
+		http.authorizeRequests().anyRequest().authenticated();
 		// add filter or change filter with custom filter
 		http.addFilterAt(new CustomUsernamePasswordFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
@@ -35,9 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //		http.cors(c -> {
 //			CorsConfigurationSource src = (request) -> {
 //				CorsConfiguration config = new CorsConfiguration();
-//				config.setAllowedOrigins(List.of("*"));
+//				config.setAllowedOrigins(List.of("http://localhost:3000"));
 //				config.setAllowedHeaders(List.of("*"));
-//				config.setAllowedMethods(List.of("*"));
+//				config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE));
 //				return config;
 //			};
 //			c.configurationSource(src);

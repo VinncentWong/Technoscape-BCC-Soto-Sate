@@ -24,4 +24,11 @@ public class DetailBankAccount {
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private User user;
+	
+	public DetailBankAccount(){
+		accountId = -1L;
+		accountHolder = "";
+		accountNumber = "";
+		user = null;
+	}
 }

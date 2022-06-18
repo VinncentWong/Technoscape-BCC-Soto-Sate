@@ -1,8 +1,13 @@
 package com.demo.service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,18 +17,28 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import com.demo.entities.DetailBankAccount;
 import com.demo.util.AppResponse;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
+import com.demo.util.JWTUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Service
 public class DetailBankAccountService {
@@ -36,11 +51,15 @@ private static final String CLIENT_ID = "1eba780f-291a-47b5-8056-b8a0774cfc9f";
 	
     private static final ObjectMapper MAPPER = new ObjectMapper();
     
-    @Autowired
-    private HttpServletRequest request;
+    private static final String PUBLIC_ACCESS_TOKEN = "public-sandbox-880f6d5d-3a27-423c-939e-306d94a031cd";
+    
+    private static final String USER_ACCESS_TOKEN = "";
     
     @Autowired
     private AppResponse response;
+    
+    @Autowired
+    private JWTUtil util;
     
 	public ResponseEntity<AppResponse> getAccessToken() throws Exception{
 		//JsonNode to store the json data retrieved
@@ -74,33 +93,13 @@ private static final String CLIENT_ID = "1eba780f-291a-47b5-8056-b8a0774cfc9f";
         //return json data with public access token from Brick API
 	}
 	
-	public ResponseEntity<AppResponse> getAccountDetail() throws DataBindingException, StreamReadException, DatabindException, UnsupportedOperationException, IOException{
-		String jwtToken = request.getHeader("Authorization");
-		jwtToken = jwtToken.substring(7, jwtToken.length());
-		//create new object mapper
-        var mapper = new ObjectMapper();
-        //link to the account list
-        var url = BASE_URL + "v1/account/list";
-        var client = HttpClientBuilder.create().build();
-        var request = new HttpGet(url);
-            //request header for the http
-        request.setHeader("Authorization", "Bearer " + jwtToken);
-        var responseHttp = client.execute(request);
-        var node = mapper.readValue(responseHttp.getEntity().getContent(), ObjectNode.class);
-        DetailBankAccount[] accounts = mapper.convertValue(node.get("data"), DetailBankAccount[].class);
-        Map<String, Object> map = new HashMap<>();
-            //condition when there is no account in the list
-        if(accounts.length == 0) {
-        	map.put("data", new DetailBankAccount());
-        	response.setData(map);
-        	response.setMessage("sukses mendapatkan detail akun");
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        //condition when account list exist
-        } else {
-        	map.put("data", accounts[0]);
-        	response.setData(map);
-        	response.setMessage("sukses mendapatkan detail akun");
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }
+	public void callBrickWidget() throws RestClientException, Exception{
+		HttpRequest request = HttpRequest.newBuilder()
+			    .uri(URI.create("https://sandbox.onebrick.io/sandbox-widget/v1/?accessToken=public-sandbox-48ea9d22-3f77-4f71-bb51-2c710fd889cd&redirect_url=/api/getusertoken"))
+			    .header("Accept", "application/json")
+			    .method("GET", HttpRequest.BodyPublishers.noBody())
+			    .build();
+			HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+			System.out.println(response.body());
 	}
 }
