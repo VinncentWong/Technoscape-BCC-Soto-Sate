@@ -37,6 +37,7 @@ public class JWTFilter extends OncePerRequestFilter{
 			List<GrantedAuthority> authorities = new ArrayList<>();
 			authorities.add(new SimpleGrantedAuthority("user"));
 			SecurityContextHolder.getContext().setAuthentication(new JWTAuthentication(subject, null, authorities));
+			filterChain.doFilter(request, response);
 		}
 		catch(ServletException ex) {
 			throw new ServletException(ex);
