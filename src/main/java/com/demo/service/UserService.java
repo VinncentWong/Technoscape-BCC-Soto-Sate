@@ -20,6 +20,7 @@ import com.demo.exception.UserExistException;
 import com.demo.exception.UserNotFoundException;
 import com.demo.repositories.UserRepository;
 import com.demo.util.AppResponse;
+import com.demo.util.JWTUtil;
 
 @Service
 public class UserService {
@@ -35,10 +36,14 @@ public class UserService {
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
 	
+	@Autowired
+	private JWTUtil util;
 	public ResponseEntity<AppResponse> signup(RegistrationDto registration) throws UserExistException{
 		Optional<User> checkUser = userRepository.findByEmail(registration.getEmail());
 		if(checkUser.isPresent()) {
-			throw new UserExistException("email sudah ada di database");
+			response.setData(null);
+			response.setMessage("email user sudah ada");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 		User user = new User();
 		user.setEmail(registration.getEmail());
@@ -60,10 +65,19 @@ public class UserService {
 	public ResponseEntity<AppResponse> login(LoginDto login) throws UserNotFoundException{
 		Optional<User> user = userRepository.findByEmail(login.getEmail());
 		if(user.isEmpty()) {
-			throw new UserNotFoundException("data user tidak ditemukan!");
+			response.setData(null);
+			response.setMessage("data user tidak ditemukan");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
+		if(!bcrypt.matches(login.getPassword(), user.get().getPassword())) {
+			response.setMessage("user tidak valid");
+			response.setData(null);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
+		String tokenJwt = util.generateToken(user.get());
 		Map<String, Object> map = new HashMap<>();
 		map.put("data", user);
+		map.put("jwt-token", tokenJwt);
 		response.setData(map);
 		response.setMessage("sukses menemukan data user!");
 		return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -80,7 +94,9 @@ public class UserService {
 	public ResponseEntity<AppResponse> updateUser(User userBody, Long id)throws UserNotFoundException{
 		Optional<User> user = userRepository.findById(id);
 		if(user.isEmpty()) {
-			throw new UserNotFoundException("data user tidak ditemukan!");
+			response.setData(null);
+			response.setMessage("data user tidak ditemukan");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
 		if(userBody.getEmail() != null) {
 			user.get().setEmail(userBody.getEmail());
