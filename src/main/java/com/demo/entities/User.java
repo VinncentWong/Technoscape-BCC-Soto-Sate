@@ -23,6 +23,8 @@ public class User {
 	
 	private String username;
 	
+	private Integer points;
+	
 	private boolean isPremium;
 	
 	private Date premium_expire;
