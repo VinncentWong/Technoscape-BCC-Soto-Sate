@@ -35,6 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
 		http.csrf().disable();
 		http.cors();
+
+		CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "DELETE"));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(List.of("Authorization"));
+
 //		http.cors(c -> {
 //			CorsConfigurationSource src = (request) -> {
 //				CorsConfiguration config = new CorsConfiguration();
@@ -46,17 +54,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //			c.configurationSource(src);
 //		});
 	}
-	
-	@Bean
-  CorsConfigurationSource corsConfigurationSource()
-  {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
-    configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "PATCH", "DELETE"));
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
   
 	@Bean
 	public BCryptPasswordEncoder getBcrypt() {
