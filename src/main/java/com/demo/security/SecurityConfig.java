@@ -3,6 +3,8 @@ package com.demo.security;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.catalina.filters.CorsFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,14 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
 		http.csrf().disable();
 		http.cors();
-
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-        corsConfiguration.setAllowedOrigins(List.of("*"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "DELETE"));
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setExposedHeaders(List.of("Authorization"));
-
 //		http.cors(c -> {
 //			CorsConfigurationSource src = (request) -> {
 //				CorsConfiguration config = new CorsConfiguration();
@@ -54,6 +48,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //			c.configurationSource(src);
 //		});
 	}
+
+	@Bean
+    public FilterRegistrationBean corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
+    }
   
 	@Bean
 	public BCryptPasswordEncoder getBcrypt() {
