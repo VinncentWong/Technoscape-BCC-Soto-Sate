@@ -4,7 +4,7 @@ My Spend is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application
   
   
  ``` 
- git clone [https://github.com/spring-projects/spring-petclinic.git](https://github.com/VinncentWong/Technoscape-BCC-Soto-Sate.git) 
+ git clone(https://github.com/VinncentWong/Technoscape-BCC-Soto-Sate.git) 
  cd spring-Technoscape-BCC-Soto-Sate 
  ./mvnw package 
  java -jar target/*.jar 
