@@ -28,6 +28,7 @@ import com.demo.util.AppResponse;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin()
 public class UserController {
 	
 	@Autowired
