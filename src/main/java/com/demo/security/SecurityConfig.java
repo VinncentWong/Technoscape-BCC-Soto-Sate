@@ -1,5 +1,6 @@
 package com.demo.security;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.demo.security.filter.CustomUsernamePasswordFilter;
 import com.demo.security.filter.JWTFilter;
@@ -32,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterAt(new CustomUsernamePasswordFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
 		http.csrf().disable();
+		http.cors();
 //		http.cors(c -> {
 //			CorsConfigurationSource src = (request) -> {
 //				CorsConfiguration config = new CorsConfiguration();
@@ -44,6 +47,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //		});
 	}
 	
+	@Bean
+  CorsConfigurationSource corsConfigurationSource()
+  {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
+    configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "PATCH", "DELETE"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+  }
+  
 	@Bean
 	public BCryptPasswordEncoder getBcrypt() {
 		return new BCryptPasswordEncoder();
