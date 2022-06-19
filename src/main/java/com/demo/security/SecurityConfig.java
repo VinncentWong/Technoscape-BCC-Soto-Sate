@@ -32,16 +32,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterAt(new CustomUsernamePasswordFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
 		http.csrf().disable();
-//		http.cors(c -> {
-//			CorsConfigurationSource src = (request) -> {
-//				CorsConfiguration config = new CorsConfiguration();
-//				config.setAllowedOrigins(List.of("http://localhost:3000/"));
-//				config.setAllowedHeaders(List.of("*"));
-//				config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE"));
-//				return config;
-//			};
-//			c.configurationSource(src);
-//		});
+		http.cors(c -> {
+			CorsConfigurationSource src = (request) -> {
+				CorsConfiguration config = new CorsConfiguration();
+				config.setAllowedOrigins(List.of("http://localhost:3000/"));
+				config.setAllowedHeaders(List.of("*"));
+				config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE"));
+				return config;
+			};
+			c.configurationSource(src);
+		});
 	}
 	
 	@Bean
