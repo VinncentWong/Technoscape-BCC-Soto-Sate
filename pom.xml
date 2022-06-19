@@ -14,7 +14,7 @@
 	<name>Technoscape-BCCSotoSate</name>
 	<description>Task for making a program to Technoscape Hackathon</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>16</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
