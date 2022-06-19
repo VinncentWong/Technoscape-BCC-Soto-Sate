@@ -1,5 +1,6 @@
 package com.demo.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ public class User {
 	
 	private boolean isPremium;
 	
-	private Date premium_expire;
+	private LocalDate premium_expire;
 	
 	private Date created_at;
 	

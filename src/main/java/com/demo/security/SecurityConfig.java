@@ -22,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers("/user/login", "/user/signup").mvcMatchers("/api/**");
+		web.ignoring().mvcMatchers("/user/login", "/user/signup", "/user/getpaymentdescription");
 	}
 
 	@Override
@@ -35,9 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //		http.cors(c -> {
 //			CorsConfigurationSource src = (request) -> {
 //				CorsConfiguration config = new CorsConfiguration();
-//				config.setAllowedOrigins(List.of("http://localhost:3000"));
+//				config.setAllowedOrigins(List.of("http://localhost:3000/"));
 //				config.setAllowedHeaders(List.of("*"));
-//				config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE));
+//				config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE"));
 //				return config;
 //			};
 //			c.configurationSource(src);

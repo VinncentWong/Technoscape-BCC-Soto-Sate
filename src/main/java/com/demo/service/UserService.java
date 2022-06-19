@@ -1,5 +1,6 @@
 package com.demo.service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -119,6 +120,66 @@ public class UserService {
 		userRepository.deleteById(id);;
 		response.setData(null);
 		response.setMessage("sukses menghapus data user");
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
+	public ResponseEntity<AppResponse> addPoint(User point, Long id){
+		Optional<User> user = userRepository.findById(id);
+		Map<String, Object> map = new HashMap<>();
+		if(user.isEmpty()) {
+			response.setData(null);
+			response.setMessage("gagal mencari data user!");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+		if(!user.get().isPremium()) {
+			response.setData(null);
+			response.setMessage("user tidak memiliki status premium!");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+		user.get().setPoints(user.get().getPoints() + point.getPoints());
+		response.setData(null);
+		response.setMessage("sukses menambahkan point user");
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	}
+	
+	public ResponseEntity<AppResponse> addPremium(Long id, int month){
+		Optional<User> user = userRepository.findById(id);
+		if(user.isEmpty()) {
+			response.setData(null);
+			response.setMessage("gagal mencari data user!");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+		user.get().setPremium(true);;
+		switch(month) {
+			case 1:
+				user.get().setPremium_expire(LocalDate.now().plusMonths(1));
+				break;
+			case 3:
+				user.get().setPremium_expire(LocalDate.now().plusMonths(3));
+				break;
+			case 6:
+				user.get().setPremium_expire(LocalDate.now().plusMonths(6));
+				break;
+			case 12:
+				user.get().setPremium_expire(LocalDate.now().plusMonths(12));
+				break;
+		}
+		userRepository.save(user.get());
+		Map<String, Object> map = new HashMap<>();
+		map.put("data", user);
+		response.setMessage("sukses menambahkan status premium ke user");
+		response.setData(map);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
+	public ResponseEntity<AppResponse> getPaymentDescription(){
+		Map<String, Object> map = new HashMap<>();
+		map.put("Bulan 1", 15000);
+		map.put("Bulan 3", 40000);
+		map.put("Bulan 6", 65000);
+		map.put("Bulan 12", 105000);
+		response.setMessage("sukses mendapatkan deskripsi pembayaran");
+		response.setData(map);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }

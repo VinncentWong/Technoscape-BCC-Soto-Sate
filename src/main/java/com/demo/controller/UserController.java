@@ -1,8 +1,11 @@
 package com.demo.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +29,9 @@ import com.demo.util.AppResponse;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+	
+	@Autowired
+	private AppResponse response;
 	
 	@Autowired
 	private UserService userService;
@@ -53,5 +59,28 @@ public class UserController {
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<AppResponse> delete(@PathVariable Long id){
 		return userService.deleteUser(id);
+	}
+	
+	@PostMapping("/addpoint/{id}")
+	public ResponseEntity<AppResponse> addPoint(@RequestBody User point, @PathVariable Long id){
+		return userService.addPoint(point, id);
+	}
+	
+	@PostMapping("/addpremium/{id}")
+	public ResponseEntity<AppResponse> addPremium(@PathVariable Long id, HttpServletRequest request){
+		try {
+			String month = request.getHeader("month");
+			return userService.addPremium(id, Integer.parseInt(month));
+		}
+		catch(Exception ex) {
+			response.setMessage(ex.getMessage());
+			response.setData(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
+	
+	@GetMapping("/getpaymentdescription")
+	public ResponseEntity<AppResponse> getPaymentDescription(){
+		return userService.getPaymentDescription();
 	}
 }
