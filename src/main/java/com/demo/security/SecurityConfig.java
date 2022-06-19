@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Resource;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -26,6 +28,9 @@ import com.demo.security.filter.JWTFilter;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
+	@Resource
+	private CorsFilter corsFilter;
+
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().mvcMatchers("/user/login", "/user/signup", "/user/getpaymentdescription");
@@ -38,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterAt(new CustomUsernamePasswordFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
 		http.csrf().disable();
+		http.addFilterBefore(corsFilter, ChannelProcessingFilter.class);
 		http.cors();
 //		http.cors(c -> {
 //			CorsConfigurationSource src = (request) -> {
