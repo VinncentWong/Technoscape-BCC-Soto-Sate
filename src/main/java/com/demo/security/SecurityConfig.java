@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
+		web.ignoring().mvcMatchers(HttpMethod.OPTIONS);
 		web.ignoring().mvcMatchers("/user/login", "/user/signup", "/user/getpaymentdescription");
 	}
 
@@ -64,8 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:3000"));
+        config.setAllowedOrigins(Collections.singletonList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         config.setAllowedHeaders(Collections.singletonList("*"));
         source.registerCorsConfiguration("/**", config);
