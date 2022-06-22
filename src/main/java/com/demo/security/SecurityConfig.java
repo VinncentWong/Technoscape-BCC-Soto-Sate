@@ -57,18 +57,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		});
 	}
 
-	@Bean
-    public CorsFilter corsFilter() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Collections.singletonList("*"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        config.setAllowedHeaders(Collections.singletonList("*"));
-        config.setMaxAge(1800L);
-        config.setAllowCredentials(true);
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
+	// @Bean
+    // public CorsFilter corsFilter() {
+    //     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     final CorsConfiguration config = new CorsConfiguration();
+    //     config.setAllowedOrigins(Collections.singletonList("*"));
+    //     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+    //     config.setAllowedHeaders(Collections.singletonList("*"));
+    //     config.setMaxAge(1800L);
+    //     config.setAllowCredentials(true);
+    //     source.registerCorsConfiguration("/**", config);
+    //     return new CorsFilter(source);
+    // }
   
 	@Bean
 	public BCryptPasswordEncoder getBcrypt() {
