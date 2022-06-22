@@ -29,13 +29,10 @@ import com.demo.security.filter.JWTFilter;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	@Resource
-	private CorsFilter corsFilter;
-
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers(HttpMethod.OPTIONS);
-		web.ignoring().mvcMatchers("/user/login", "/user/signup", "/user/getpaymentdescription");
+		web.ignoring().mvcMatchers(HttpMethod.OPTIONS, "/**");
+		web.ignoring().mvcMatchers("/user/login", "/user/signup", "/user/getpaymentdescription", "/");
 	}
 
 	@Override
@@ -45,13 +42,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterAt(new CustomUsernamePasswordFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
 		http.csrf().disable();
-		http.addFilterBefore(corsFilter, ChannelProcessingFilter.class);
 		http.cors();
+		// http.addFilterBefore(corsFilter, ChannelProcessingFilter.class);
+		// http.cors();
 		// http.cors(c -> {
 		// 	CorsConfigurationSource src = (request) -> {
 		// 		CorsConfiguration config = new CorsConfiguration();
 		// 		config.setAllowCredentials(true);
-		// 		config.setAllowedOrigins(List.of("http://127.0.0.1:3000"));
+		// 		config.setAllowedOrigins(List.of("http://127.0.0.1:4040"));
 		// 		config.setAllowedHeaders(List.of("*"));
 		// 		config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE"));
 		// 		return config;
@@ -60,16 +58,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		// });
 	}
 
-	@Bean
-    public CorsFilter corsFilter() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:3000"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        config.setAllowedHeaders(Collections.singletonList("*"));
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
+	// @Bean
+    // public CorsFilter corsFilter() {
+    //     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     final CorsConfiguration config = new CorsConfiguration();
+    //     config.setAllowedOrigins(Collections.singletonList("*"));
+    //     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+    //     config.setAllowedHeaders(Collections.singletonList("*"));
+    //     source.registerCorsConfiguration("/**", config);
+    //     return new CorsFilter(source);
+    // }
   
 	@Bean
 	public BCryptPasswordEncoder getBcrypt() {
