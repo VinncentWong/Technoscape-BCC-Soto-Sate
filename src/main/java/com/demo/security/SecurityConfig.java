@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
 		http.csrf().disable();
 		http.addFilterBefore(corsFilter, ChannelProcessingFilter.class);
-
+		http.cors();
 		// http.cors(c -> {
 		// 	CorsConfigurationSource src = (request) -> {
 		// 		CorsConfiguration config = new CorsConfiguration();
