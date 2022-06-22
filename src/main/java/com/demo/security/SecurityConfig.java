@@ -44,31 +44,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterAfter(new JWTFilter(), CustomUsernamePasswordFilter.class);
 		http.csrf().disable();
 		http.addFilterBefore(corsFilter, ChannelProcessingFilter.class);
-		http.cors(c -> {
-			CorsConfigurationSource src = (request) -> {
-				CorsConfiguration config = new CorsConfiguration();
-				config.setAllowCredentials(true);
-				config.setAllowedOrigins(List.of("http://127.0.0.1:3000"));
-				config.setAllowedHeaders(List.of("*"));
-				config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE"));
-				return config;
-			};
-			c.configurationSource(src);
-		});
+
+		// http.cors(c -> {
+		// 	CorsConfigurationSource src = (request) -> {
+		// 		CorsConfiguration config = new CorsConfiguration();
+		// 		config.setAllowCredentials(true);
+		// 		config.setAllowedOrigins(List.of("http://127.0.0.1:3000"));
+		// 		config.setAllowedHeaders(List.of("*"));
+		// 		config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE"));
+		// 		return config;
+		// 	};
+		// 	c.configurationSource(src);
+		// });
 	}
 
-	// @Bean
-    // public CorsFilter corsFilter() {
-    //     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    //     final CorsConfiguration config = new CorsConfiguration();
-    //     config.setAllowedOrigins(Collections.singletonList("*"));
-    //     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-    //     config.setAllowedHeaders(Collections.singletonList("*"));
-    //     config.setMaxAge(1800L);
-    //     config.setAllowCredentials(true);
-    //     source.registerCorsConfiguration("/**", config);
-    //     return new CorsFilter(source);
-    // }
+	@Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+		config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:3000"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedHeaders(Collections.singletonList("*"));
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
   
 	@Bean
 	public BCryptPasswordEncoder getBcrypt() {
